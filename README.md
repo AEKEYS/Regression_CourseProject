@@ -54,7 +54,7 @@ g + geom_boxplot()+
     labs(x="Transmission Type",y="MPG")
 ```
 
-<img src="./Regression_CourseProject_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="500px" />
+![](./Regression_CourseProject_files/figure-html/unnamed-chunk-4-1.png) 
 
 To test whether the difference is significant, we hypothesize that mean fuel economy for manual transmissions is larger than the mean for automatics.
 
@@ -94,7 +94,7 @@ for (i in c(2:11)){
 title(main="Visual Correlation With MPG",outer=TRUE)
 ```
 
-<img src="./Regression_CourseProject_files/figure-html/unnamed-chunk-7-1.png" title="" alt="" width="500px" />
+![](./Regression_CourseProject_files/figure-html/unnamed-chunk-7-1.png) 
 
 ```r
 par(mar=c(4,4,1,1), oma=c(1,1,1,1), mfrow=c(1,1))
@@ -125,7 +125,7 @@ legend("topright",c("Manual","Automatic"),
        cex=.8)
 ```
 
-<img src="./Regression_CourseProject_files/figure-html/unnamed-chunk-10-1.png" title="" alt="" width="500px" />
+![](./Regression_CourseProject_files/figure-html/unnamed-chunk-10-1.png) 
 
 +  Therefore, we conclude that there is no interaction with horsepower, so removing that term from our model decreases our residual error and improves the amount of variation explained.
 
@@ -151,4 +151,4 @@ Overall, there does not appear to be a pattern in our model's residual errors, s
 plot(predict(fitBoth2),resid(fitBoth2),main="Residuals Plot Shows No Pattern",cex.main=.8,xlab="predicted fuel economy",ylab="residual error") # no obvious pattern
 ```
 
-<img src="./Regression_CourseProject_files/figure-html/unnamed-chunk-13-1.png" title="" alt="" width="500px" />
+![](./Regression_CourseProject_files/figure-html/unnamed-chunk-13-1.png) 
