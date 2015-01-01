@@ -100,7 +100,7 @@ title(main="Visual Correlation With MPG",outer=TRUE)
 par(mar=c(4,4,1,1), oma=c(1,1,1,1), mfrow=c(1,1))
 ```
 
- +  Our first attempt models MPG as a function of weight and transmission. It finds no appreciable difference between fuel efficiency loss per 1000 pound weight increase between automatics and manuals (automatics lose -5.35 MPG/1000 pounds whereas manuals lose -5.38). This suggests weight alone is a more important factor on fuel efficiency than transmission.  However, this model is dropped because transmission types are not evenly represented at all weight values (automatics are clustered at the heavier end), so linear relationship is might be dubious.
+ +  Our first attempt models MPG as a function of weight and transmission. Controlling for weight, the transmission type is not a significant contributor to variation in fuel efficiency (p-value of transmission coefficient is high at 0.988). However, this model is dropped because transmission types are not evenly represented at all weight values (automatics are clustered at the heavier end), so linear relationships might be dubious.
  
 
 ```r

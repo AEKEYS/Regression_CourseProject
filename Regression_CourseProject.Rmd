@@ -78,7 +78,7 @@ fitBoth <- lm(mpg ~ wt + am, data=mtcars)
 #abline(c(fitBoth$coeff[1]+fitBoth$coeff[3],fitBoth$coeff[2]),col="black",lwd=3)
 #summary(fitBoth) #no difference between auto and manual
 ```
- +  Our first attempt models MPG as a function of weight and transmission. It finds no appreciable difference between fuel efficiency loss per 1000 pound weight increase between automatics and manuals (automatics lose `r round(fitBoth$coeff[2],2)` MPG/1000 pounds whereas manuals lose `r round(fitBoth$coeff[2] + fitBoth$coeff[3],2)`). This suggests weight alone is a more important factor on fuel efficiency than transmission.  However, this model is dropped because transmission types are not evenly represented at all weight values (automatics are clustered at the heavier end), so linear relationship is might be dubious.
+ +  Our first attempt models MPG as a function of weight and transmission. Controlling for weight, the transmission type is not a significant contributor to variation in fuel efficiency (p-value of transmission coefficient is high at 0.988). However, this model is dropped because transmission types are not evenly represented at all weight values (automatics are clustered at the heavier end), so linear relationships might be dubious.
  
 ```{r}
 fitBoth3 <- lm(mpg ~ hp + am + am*hp,data=mtcars)
