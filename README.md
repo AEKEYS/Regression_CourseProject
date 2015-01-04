@@ -56,25 +56,50 @@ g + geom_boxplot()+
 
 ![](./Regression_CourseProject_files/figure-html/unnamed-chunk-4-1.png) 
 
-To test whether the difference is significant, we hypothesize that mean fuel economy for manual transmissions is larger than the mean for automatics.
+To test whether the difference in means for manual and automatic transmissions is significant, we hypothesize that the absolute value of the difference is greater than zero.
+
 
 ```r
 # appears significant -- but let's test it!
-# reject null if t-statistic larger than
-testCriteria <- round(qt(.95,n-1),3)
 
-# Hypothesize that manual transmission's mean mpg is larger than an automatic's
+# Hypothesize that the difference in manual and automatic transmission means is non-zero
 manMPG <- mtcars$mpg[which(mtcars$am=="man")]
 autoMPG <- mtcars$mpg[which(mtcars$am=="auto")]
+
+df <- ((var(manMPG)/length(manMPG) + var(autoMPG)/length(autoMPG))^2)/
+    (
+        (var(manMPG)/(length(manMPG)))^2/(length(manMPG)-1)+
+            ((var(autoMPG)/length(autoMPG))^2/(length(autoMPG)-1))
+        )
+
+# reject null if t-statistic larger than
+testCriteria <- round(qt(.975,df),3)
 ```
-- In order to reject a null hypothesis that the manual's mean is *not* greater than the automatic's with 5% or fewer false rejections (type I error rate), the manual's mean must be greater than 1.696 standard errors away from the automatic's. The below calculation shows that we reject the null and conclude that the manual does have a larger mean. 
+- In order to reject a null hypothesis that the difference in the means is *not* zero with 5% or fewer false rejections (type I error rate), the difference must be more than 2.098 standard errors away from zero. The below calculation shows that we reject the null and conclude that the difference is significant with 95% confidence.
+
 
 ```r
-(mean(manMPG)-mean(autoMPG))*sqrt(13)/sd(manMPG)
+standError <- sqrt(var(manMPG)/length(manMPG)+var(autoMPG)/length(autoMPG))
+
+# Test Statistic
+(mean(manMPG)-mean(autoMPG))/standError #the number of standard errors the observed difference in means is from zero
 ```
 
 ```
-## [1] 4.236112
+## [1] 3.767123
+```
+
+```r
+# 95% Confidence interval
+mean(manMPG)-mean(autoMPG) + c(-1,1) * qt(.975,df) * standError
+```
+
+```
+## [1]  3.209684 11.280194
+```
+
+```r
+#t.test(manMPG, autoMPG, paired=FALSE, var.equal = FALSE)
 ```
 
 ####Quantifying the Relationship Between Transmission Types and MPG
@@ -100,7 +125,7 @@ title(main="Visual Correlation With MPG",outer=TRUE)
 par(mar=c(4,4,1,1), oma=c(1,1,1,1), mfrow=c(1,1))
 ```
 
- +  Our first attempt models MPG as a function of weight and transmission. Controlling for weight, the transmission type is not a significant contributor to variation in fuel efficiency (p-value of transmission coefficient is high at 0.988). However, this model is dropped because transmission types are not evenly represented at all weight values (automatics are clustered at the heavier end), so linear relationships might be dubious.
+ +  Our first attempt models MPG as a function of weight and transmission. Controlling for weight, the transmission type does not appear to be a significant contributor to variation in fuel efficiency (p-value of transmission coefficient is high at 0.988). We notice, however, that transmission types are not evenly represented at all weight values (automatics are clustered at the heavier end), so this preliminary finding may be invalid.
  
 
 ```r
@@ -127,13 +152,15 @@ legend("topright",c("Manual","Automatic"),
 
 ![](./Regression_CourseProject_files/figure-html/unnamed-chunk-10-1.png) 
 
-+  Therefore, we conclude that there is no interaction with horsepower, so removing that term from our model decreases our residual error and improves the amount of variation explained.
++  Therefore, we conclude that there is no interaction with horsepower, so removing that term from our model decreases our residual error and improves the amount of variation explained. We center the model on mean horserpower to improve the interprebility of the intercepts.
 
 
 ```r
 fitBoth3 <- lm(mpg ~ hp + am + am*hp,data=mtcars) #remove the interaction term
-fitBoth2 <- lm(mpg ~ hp + am,data=mtcars)
+fitBoth2 <- lm(mpg ~ I(hp-mean(hp)) + am,data=mtcars) #and center on mean horsepower
 ```
+
++ At an average horsepower of 146.69, manuals have higher MPG (23.22) than automatics (17.95). The interaction between horsepower and transmission was insignificant, so MPG decreases by the same rate for both transmission types for each gain in horsepower. Additional research could consider modeling with additional variables.
 
 ###Model Diagnostics
 From the chart above, it appears that some points have the potential to exert leverage on our model (change the slope).  To see which cars correspond with these points, we examine the "hat values" diagnostic. The Maserati (hat=0.39) has the potential to exert leverage on our model's explanation of the rate of change of a manual's fuel economy per unit horsepower.
